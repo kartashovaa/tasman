@@ -7,6 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
+import com.example.tasman.tasks.ui.create.CreateTaskScreen
 import com.example.tasman.tasks.ui.list.TasksListScreen
 import com.example.tasman.ui.theme.TasmanTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,9 +24,18 @@ class MainActivity : ComponentActivity() {
             TasmanTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TasksListScreen(
-                        onNewTaskClicked = { /* TODO: Not yet implemented */ }
-                    )
+                    val controller = rememberNavController()
+                    NavHost(navController = controller, startDestination = "list") {
+                        composable("list") {
+                            TasksListScreen(
+                                onNewTaskClicked = { controller.navigate("create") }
+                            )
+                        }
+
+                        composable("create") {
+                            CreateTaskScreen(onCompleted = controller::popBackStack)
+                        }
+                    }
                 }
             }
         }

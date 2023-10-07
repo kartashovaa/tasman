@@ -2,6 +2,7 @@ package com.example.tasman.tasks.ui.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,10 +31,11 @@ import com.example.tasman.tasks.ui.preview.TaskProvider
 @Composable
 fun TasksListScreen(
     viewModel: TasksListViewModel = hiltViewModel(),
+    onTaskClicked: (Long) -> Unit = {},
     onNewTaskClicked: () -> Unit = {},
 ) {
     val tasksState by viewModel.tasks.collectAsState()
-    TasksListScreenBody(tasksState, viewModel::completeTask, onNewTaskClicked)
+    TasksListScreenBody(tasksState, viewModel::completeTask, onTaskClicked, onNewTaskClicked)
 }
 
 @Composable
@@ -43,6 +45,7 @@ private fun TasksListScreenBody(
     @PreviewParameter(TasksListUiStateProvider::class)
     state: TasksListUiState,
     onTaskCompleted: (Long) -> Unit = {},
+    onTaskClicked: (Long) -> Unit = {},
     onNewTaskClicked: () -> Unit = {},
 ) = Box {
     when (state) {
@@ -50,7 +53,12 @@ private fun TasksListScreenBody(
         TasksListUiState.Empty -> Text(text = "There is nothing to do", modifier = Modifier.align(Alignment.Center))
         is TasksListUiState.Content -> LazyColumn(modifier = Modifier.fillMaxSize()) {
             itemsIndexed(state.tasks, key = { _, task -> task.id }) { index, task ->
-                TaskPreview(task, modifier = Modifier.animateItemPlacement()) { id, isCompleted ->
+                TaskPreview(
+                    task,
+                    modifier = Modifier
+                        .animateItemPlacement()
+                        .clickable { onTaskClicked(task.id) }
+                ) { id, isCompleted ->
                     if (isCompleted) onTaskCompleted(id)
                 }
                 if (index < state.tasks.lastIndex) Divider(modifier = Modifier.animateItemPlacement())

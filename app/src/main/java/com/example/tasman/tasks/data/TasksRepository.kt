@@ -12,6 +12,8 @@ class TasksRepository @Inject constructor(
 
     fun loadAll(): Flow<List<Task>> = dao.getAll()
 
+    fun load(taskId: Long): Flow<Task> = dao.get(taskId)
+
     suspend fun complete(taskId: Long) = dao.complete(taskId)
 
     suspend fun create(task: TaskForm) = dao.insert(

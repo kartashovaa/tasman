@@ -12,6 +12,9 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE isCompleted=0")
     fun getAll(): Flow<List<Task>>
 
+    @Query("SELECT * FROM tasks WHERE id=:taskId")
+    fun get(taskId: Long): Flow<Task>
+
     @Insert
     suspend fun insert(task: Task): Long
 

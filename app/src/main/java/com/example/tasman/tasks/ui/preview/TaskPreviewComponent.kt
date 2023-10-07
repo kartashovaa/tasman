@@ -39,8 +39,8 @@ fun TaskPreview(
 class TaskProvider : PreviewParameterProvider<Task> {
 
     override val values: Sequence<Task> = sequenceOf(
-        Task(id = 0, title = "Design Dribbble concept", isCompleted = true),
-        Task(id = 0, title = lorem),
+        Task(id = 0, title = "Design Dribbble concept", description = "Design Dribbble concept", isCompleted = true),
+        Task(id = 0, title = lorem, description = lorem),
     )
 }
 
